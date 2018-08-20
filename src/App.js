@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ButtonAppBar from './ButtonAppBar';
 import Expense from './Expense';
+import Papa from 'papaparse';
 
 class App extends Component {
     constructor(props) {
@@ -33,18 +34,25 @@ class App extends Component {
     extractPayloads(files) {
         return new Promise((resolve, reject) => {
             resolve(Array.from(files).map(file => {
-                // const reader = new FileReader
-                // reader.readAsText(file)
+                this.calcExpense(file);
                 return file.size;
             }));
         });
     }
-    // calcExpense(file) {
-    //     return new Promise((resolve, reject) => {
-    //         const reader = new FileReader
-    //         reader.readAsText(file)
-    //     });
-    // }
+    calcExpense(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsText(file, 'shift-jis');
+            reader.onload = (e) => {
+                const content = e.target.result.replace(/日付/g, 'date').replace(/支払い金額/g, 'amount');
+                const parsedData = Papa.parse(content, {encoding: 'shift-jis', header: true});
+                console.log('data3=' + JSON.stringify(parsedData.data[3]));
+            };
+            reader.onerror = () => {
+                reject('###csv load error: ' + file.name);
+            };
+        });
+    }
 
     changeFiles = e => {
         this.updateFiles(e);
