@@ -22,31 +22,43 @@ class App extends Component {
     }
 
     loadPayloads() {
-        return [];
+        return [{date: '2018-09', amount: '2,000'}];
     }
     updatePayloads(e) {
         this.extractPayloads(e.target.files).then(result => {
             this.setState({
-                payloads: result,
+                payloads: this.mergeResult(result),
             })
         });
     }
+    mergeResult(files) {
+        let result = [];
+        for (const file of files) {
+            for (const row of file) {
+                const found = result.length > 0 && result.find(elm => elm.date === row.date);
+                if (found) {
+                    found.amount += row.amount;
+                } else {
+                    result.push(row);
+                }
+            }
+        }
+
+        console.log('result=' + result);
+        return result;
+    }
     extractPayloads(files) {
-        return new Promise((resolve, reject) => {
-            resolve(Array.from(files).map(file => {
-                this.calcExpense(file);
-                return file.size;
-            }));
-        });
+        return Promise.all(Array.from(files).map(file => this.calcExpense(file)));
     }
     calcExpense(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsText(file, 'shift-jis');
             reader.onload = (e) => {
-                const content = e.target.result.replace(/日付/g, 'date').replace(/支払い金額/g, 'amount');
+                const content = e.target.result.replace(/日付/g, 'date').replace(/支払い金額/g, 'amount').replace(/摘要内容/g, 'class');
                 const parsedData = Papa.parse(content, {encoding: 'shift-jis', header: true});
-                console.log('data3=' + JSON.stringify(parsedData.data[3]));
+                console.log('data4=' + JSON.stringify(parsedData.data[4]));
+                resolve([{date: '2018/08', amount: '1000'}, {date: '2018/07', amount: '3000'}])
             };
             reader.onerror = () => {
                 reject('###csv load error: ' + file.name);
