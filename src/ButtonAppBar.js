@@ -28,26 +28,15 @@ const styles = {
 };
 
 
-const initFiles = () => {
-    return [];
-}
 
 
 class ButtonAppBar extends Component {
     constructor(props) {
         super(props);
-        this.state = {fileNames: initFiles()};
-    }
-
-    changeFiles = e => {
-        const fileNames = Array.from(e.target.files).map(file => file.name);
-        this.setState({
-            fileNames: fileNames
-        });
     }
 
     render() {
-        const {classes} = this.props;
+        const {classes, fileNames, changeFiles} = this.props;
         return (
             <div className={classes.root}>
                 <AppBar position="static">
@@ -55,20 +44,17 @@ class ButtonAppBar extends Component {
                         <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="body2" color="inherit" className={classes.flex}>
-                            Filename: xxx
-                        </Typography><label htmlFor="flat-button-file">
 
-                        <input className={classes.input}  id="flat-button-file" multiple type="file"
-                               onChange={e => this.changeFiles(e)}/>
-                        {this.state.fileNames.map(fileName => (
-                            <span key={fileName} color={'#0000'}>{fileName}</span>
-                        ))}
-                        <Button component="span" className={classes.button}>
-                            Upload
-                        </Button>
-                    </label>
-
+                        <label htmlFor="flat-button-file">
+                            <input className={classes.input}  id="flat-button-file" multiple type="file"
+                                   onChange={e => changeFiles(e)}/>
+                            {fileNames.map(fileName => (
+                                <span key={fileName} color={'#0000'}>{fileName}&nbsp;&nbsp;</span>
+                            ))}
+                            <Button component="span" className={classes.button}>
+                                Upload
+                            </Button>
+                        </label>
                     </Toolbar>
                 </AppBar>
             </div>

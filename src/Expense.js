@@ -57,30 +57,38 @@ const tiers = [
 
 
 function Expense(props) {
-    const { classes } = props;
+    const { classes, payloads } = props;
 
     return (
-        <Grid container spacing={40} alignItems="flex-end">
-            {tiers.map(tier => (
-                <Grid item key={tier.title} xs={12} sm={6} md={4}>
-                    <Card>
-                        <CardHeader
-                            title={tier.title}
-                            titleTypographyProps={{ align: 'center' }}
-                            subheaderTypographyProps={{ align: 'center' }}
-                            className={classes.cardHeader}
-                        />
-                        <CardContent>
-                            <div className={classes.cardPricing}>
-                                <Typography variant="display2" color="textPrimary">
-                                    ${tier.price}
-                                </Typography>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            ))}
-        </Grid>
+        <div>
+            <div>
+                {payloads.map(payload => (
+                    <span key={payload}>{payload}byte / &nbsp;&nbsp;</span>
+                ))}
+            </div>
+            <Grid container spacing={40} alignItems="flex-end">
+                {tiers.map(tier => (
+                    <Grid item key={tier.title} xs={12} sm={6} md={4}>
+                        <Card>
+                            <CardHeader
+                                title={tier.title}
+                                titleTypographyProps={{ align: 'center' }}
+                                subheaderTypographyProps={{ align: 'center' }}
+                                className={classes.cardHeader}
+                            />
+                            <CardContent>
+                                <div className={classes.cardPricing}>
+                                    <Typography variant="display2" color="textPrimary">
+                                        ${tier.price}
+                                    </Typography>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
+        </div>
+
     );
 }
 
