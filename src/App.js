@@ -25,30 +25,11 @@ class App extends Component {
         return [{date: '2018-09', amount: '2,000'}];
     }
     updatePayloads(e) {
-        this.extractPayloads(e.target.files).then(result => {
+        Promise.all(Array.from(e.target.files).map(file => this.calcExpense(file))).then(result => {
             this.setState({
                 payloads: this.mergeResult(result),
             })
         });
-    }
-    mergeResult(files) {
-        let result = [];
-        for (const file of files) {
-            for (const row of file) {
-                const found = result.length > 0 && result.find(elm => elm.date === row.date);
-                if (found) {
-                    found.amount += row.amount;
-                } else {
-                    result.push(row);
-                }
-            }
-        }
-
-        console.log('result=' + result);
-        return result;
-    }
-    extractPayloads(files) {
-        return Promise.all(Array.from(files).map(file => this.calcExpense(file)));
     }
     calcExpense(file) {
         return new Promise((resolve, reject) => {
@@ -64,6 +45,27 @@ class App extends Component {
                 reject('###csv load error: ' + file.name);
             };
         });
+    }
+    // mergeResult(arrays) {
+    //     let unitArray = arrays.reduce()
+    //
+    // }
+
+    mergeResult(files) {
+        let result = [];
+        for (const file of files) {
+            for (const row of file) {
+                const found = result.length > 0 && result.find(elm => elm.date === row.date);
+                if (found) {
+                    found.amount += row.amount;
+                } else {
+                    result.push(row);
+                }
+            }
+        }
+
+        console.log('result=' + result);
+        return result;
     }
 
     changeFiles = e => {
